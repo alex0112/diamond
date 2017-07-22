@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tutorial App - FamilySearch JavaScript SDK</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/familysearch-javascript-sdk/2.0.4/familysearch-javascript-sdk.min.js"></script> 
+  </head>
+  <body>
+  <h2>Welcome to the FamilySearch JavaScript SDK Tutorial!!!</h2>  
+
+  <!-- AUTHENTICATE -->
+
+<script>  // Instantiate the SDK client
+  var client = new FamilySearch({  
+  // Copy your app key into the client_id parameter
+  client_id: 'a02f100000PUJl5AAH',
+  redirect_uri: 'http://127.0.0.1:8080',
+  save_access_token: true,
+  environment: 'sandbox'
+  });
+  
+  var login = function() {
+  client.getAccessToken().then(function(){
+  return client.getCurrentUser();
+  }).then(function(response) {
+  $('#user-info').append('CONGRATULATIONS!!! User '+response.getUser().getContactName()+' is signed in.<br>The access token has been stored in a session so that future interactions in this tutorial are authenticated.<br><br>Now update the tutorial app to READ CURRENT TREE PERSON.');
+  });
+  };
+</script>
+<a href="#" onclick="login()"><h2>Step 1. Click to SIGN IN</h2></a><br><br>
+<div id="user-info"></div>
+
+
+  
+  <!-- READ CURRENT TREE PERSON  -->
+
+<script>    // Get the current tree person.
+var readPerson = function (){
+    // From the user profile, extract the tree person ID.
+    client.getCurrentUser().then(function(userResponse){
+	return userResponse.getUser().getPersonId();
+    })
+    
+    // Retrieve the person
+	.then(function(personId){
+	    return client.getPerson(personId);
+	})
+    
+    // Get the person from the response and print
+	.then(function(personResponse){
+	    var person = personResponse.getPerson();
+	    $('#read-person').append('<b>Name: </b>'+person.getDisplayName()+'<br><strong>Birth Date: </strong>'+person.getDisplayBirthDate()+'<br><br>Now update the tutorial app to SEARCH.');
+	})
+    // Catch any errors
+	.catch(function(e){
+	    $('#read-person').append(displayError(e));
+	});
+}
+    
+    </script>
+<a href="#" onclick="readPerson()"><h2>Click to READ THE CURRENT TREE PERSON</h2></a><br><br>
+<div id="read-person"></div>
+  
+  <!-- SEARCH -->
+
+  <!-- READ PID -->
+
+  </body>
+</html>
